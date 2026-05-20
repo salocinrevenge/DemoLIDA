@@ -2,6 +2,10 @@ package modules;
 
 import edu.memphis.ccrg.lida.environment.EnvironmentImpl;
 import edu.memphis.ccrg.lida.framework.tasks.FrameworkTaskImpl;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +17,10 @@ import ws3dproxy.model.World;
 import ws3dproxy.util.Constants;
 
 public class Environment extends EnvironmentImpl {
+
+    public static final int ENVIRONMENT_WIDTH = 300;
+    public static final int ENVIRONMENT_HEIGHT = 150;
+    private BufferedImage image;
 
     private static final int DEFAULT_TICKS_PER_RUN = 100;
     private int ticksPerRun;
@@ -33,6 +41,42 @@ public class Environment extends EnvironmentImpl {
         this.thingAhead = new ArrayList<>();
         this.leafletJewel = null;
         this.currentAction = "rotate";
+        this.image = new BufferedImage(ENVIRONMENT_WIDTH, ENVIRONMENT_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        clearImage();
+    }
+
+    private void clearImage() {
+        if (image != null) {
+            Graphics g = image.getGraphics();
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, ENVIRONMENT_WIDTH, ENVIRONMENT_HEIGHT);
+        }
+    }
+
+    private void drawAction(String action) {
+        clearImage();
+        if (action != null && !action.isEmpty() && !action.equals("none")) {
+            Graphics g = image.getGraphics();
+            g.setColor(Color.BLUE);
+            g.setFont(new Font("SansSerif", Font.BOLD, 24));
+            // Centralizando o texto basico
+            System.out.println("Action: " + action);
+            if (action.equals("get")) {
+                if(thingAhead != null && thingAhead.get(0).getCategory() == Constants.categoryJEWEL) {
+                action = "Get Jewel";
+                }
+                else
+                {
+                    action = "Eat Food";
+                }
+            }
+            g.drawString("Action: " + action, 20, ENVIRONMENT_HEIGHT / 2);
+        }
+    }
+
+    @Override
+    public Object getModuleContent(Object... params) {
+        return image;
     }
 
     @Override
@@ -72,6 +116,7 @@ public class Environment extends EnvironmentImpl {
     @Override
     public void resetState() {
         currentAction = "rotate";
+        clearImage();
     }
 
     @Override
@@ -142,6 +187,7 @@ public class Environment extends EnvironmentImpl {
     public void processAction(Object action) {
         String actionName = (String) action;
         currentAction = actionName.substring(actionName.indexOf(".") + 1);
+        drawAction(currentAction);
     }
 
     private void performAction(String currentAction) {
