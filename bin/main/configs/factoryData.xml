@@ -130,18 +130,6 @@
             <associatedmodule>SensoryMemory</associatedmodule>
             <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
         </task>
-        <task name="DeliverySpotDetector">
-            <class>detectors.DeliverySpotDetector</class>
-            <ticksperrun>3</ticksperrun>
-            <associatedmodule>SensoryMemory</associatedmodule>
-            <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
-        </task>
-        <task name="CompleteLeafletDetector">
-            <class>detectors.CompleteLeafletDetector</class>
-            <ticksperrun>3</ticksperrun>
-            <associatedmodule>SensoryMemory</associatedmodule>
-            <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
-        </task>
         <task name="BasicAttentionCodelet">
             <class>edu.memphis.ccrg.lida.attentioncodelets.BasicAttentionCodelet
             </class>

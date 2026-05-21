@@ -31,6 +31,8 @@ public class Environment extends EnvironmentImpl {
     private List<Thing> thingAhead;
     private Thing leafletJewel;
     private String currentAction;   
+    private Thing deliverySpot;
+    private Boolean hasCompleteLeaflet;
     
     public Environment() {
         this.ticksPerRun = DEFAULT_TICKS_PER_RUN;
@@ -41,6 +43,8 @@ public class Environment extends EnvironmentImpl {
         this.thingAhead = new ArrayList<>();
         this.leafletJewel = null;
         this.currentAction = "rotate";
+        this.deliverySpot = null;
+        this.hasCompleteLeaflet = false;
         this.image = new BufferedImage(ENVIRONMENT_WIDTH, ENVIRONMENT_HEIGHT, BufferedImage.TYPE_INT_RGB);
         clearImage();
     }
@@ -137,6 +141,12 @@ public class Environment extends EnvironmentImpl {
             case "leafletJewel":
                 requestedObject = leafletJewel;
                 break;
+            case "deliverySpot":
+                requestedObject = deliverySpot;
+                break;
+            case "hasCompleteLeaflet":
+                requestedObject = hasCompleteLeaflet;
+                break;
             default:
                 break;
         }
@@ -150,9 +160,28 @@ public class Environment extends EnvironmentImpl {
         jewel = null;
         leafletJewel = null;
         thingAhead.clear();
+        deliverySpot = null;
+        hasCompleteLeaflet = false;
+
+        // Check if there is any complete leaflet
+        for (Leaflet leaflet : creature.getLeaflets()) {
+            boolean complete = true;
+            for (String color : leaflet.getItems().keySet()) {
+                if (leaflet.getTotalNumberOfType(color) > leaflet.getCollectedNumberOfType(color)) {
+                    complete = false;
+                    break;
+                }
+            }
+            if (complete) {
+                hasCompleteLeaflet = true;
+                break;
+            }
+        }
                 
         for (Thing thing : creature.getThingsInVision()) {
-            if (creature.calculateDistanceTo(thing) <= Constants.OFFSET) {
+            if (thing.getCategory() == Constants.categoryDeliverySPOT) {
+                deliverySpot = thing;
+            } else if (creature.calculateDistanceTo(thing) <= Constants.OFFSET) {
                 // Identifica o objeto proximo
                 thingAhead.add(thing);
                 break;
@@ -200,6 +229,11 @@ public class Environment extends EnvironmentImpl {
                 case "gotoFood":
                     if (food != null) 
                         creature.moveto(4.0, food.getX1(), food.getY1());
+                    else creature.move(0.0, 0.0, 0.0);
+                    break;
+                case "gotoDeliverySpot":
+                    if (deliverySpot != null)
+                        creature.moveto(4.0, 500.0, 500.0);
                     else creature.move(0.0, 0.0, 0.0);
                     break;
                 case "gotoJewel":
