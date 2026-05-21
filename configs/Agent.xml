@@ -224,7 +224,19 @@
                 <task name="DeliverySpotAttentionCodelet">
                     <tasktype>BasicAttentionCodelet</tasktype>
                     <ticksperrun>5</ticksperrun>
-                    <param name="nodes" type="string">deliverySpot,completeLeaflet,nearDeliverySpot</param>
+                    <param name="nodes" type="string">deliverySpot,completeLeaflet</param>
+                    <param name="refractoryPeriod" type="int">100</param>
+                    <param name="initialActivation" type="double">1.0</param>
+                    <param name="learnable.baseLevelActivation" type="double">1.0</param>
+                    <param name="learnable.baseLevelRemovalThreshold" type="double">-1.0</param>
+                    <param name="learnable.baseLevelDecayStrategy" type="string">defaultDecay</param>
+                    <param name="learnable.baseLevelExciteStrategy" type="string">defaultExcite</param>
+                    <param name="learnable.totalActivationStrategy" type="string">DefaultTotalActivationStrategy</param>
+                </task>
+                <task name="DeliveryReadyAttentionCodelet">
+                    <tasktype>BasicAttentionCodelet</tasktype>
+                    <ticksperrun>5</ticksperrun>
+                    <param name="nodes" type="string">completeLeaflet,nearDeliverySpot</param>
                     <param name="refractoryPeriod" type="int">100</param>
                     <param name="initialActivation" type="double">1.0</param>
                     <param name="learnable.baseLevelActivation" type="double">1.0</param>
@@ -322,3 +334,5 @@
         </listener>
     </listeners>
 </lida>
+
+
