@@ -35,6 +35,12 @@ public class Environment extends EnvironmentImpl {
     private Boolean hasCompleteLeaflet;
     private Long completeLeafletId;
     private Boolean nearDeliverySpot;
+    private Double lastFoodX;
+    private Double lastFoodY;
+    private Double lastLeafletJewelX;
+    private Double lastLeafletJewelY;
+    private Double lastDeliverySpotX;
+    private Double lastDeliverySpotY;
     
     public Environment() {
         this.ticksPerRun = DEFAULT_TICKS_PER_RUN;
@@ -49,6 +55,12 @@ public class Environment extends EnvironmentImpl {
         this.hasCompleteLeaflet = false;
         this.completeLeafletId = null;
         this.nearDeliverySpot = false;
+        this.lastFoodX = null;
+        this.lastFoodY = null;
+        this.lastLeafletJewelX = null;
+        this.lastLeafletJewelY = null;
+        this.lastDeliverySpotX = null;
+        this.lastDeliverySpotY = null;
         this.image = new BufferedImage(ENVIRONMENT_WIDTH, ENVIRONMENT_HEIGHT, BufferedImage.TYPE_INT_RGB);
         clearImage();
     }
@@ -191,6 +203,8 @@ public class Environment extends EnvironmentImpl {
         for (Thing thing : creature.getThingsInVision()) {
             if (thing.getCategory() == Constants.categoryDeliverySPOT) {
                 deliverySpot = thing;
+                lastDeliverySpotX = thing.getX1();
+                lastDeliverySpotY = thing.getY1();
                 System.out.println("Delivery Spot detected at (" + thing.getX1() + ", " + thing.getY1() + ")");
                 if (creature.calculateDistanceTo(thing) <= Constants.OFFSET) {
                     nearDeliverySpot = true;
@@ -206,6 +220,8 @@ public class Environment extends EnvironmentImpl {
                         if (leaflet.ifInLeaflet(thing.getMaterial().getColorName()) &&
                                 leaflet.getTotalNumberOfType(thing.getMaterial().getColorName()) > leaflet.getCollectedNumberOfType(thing.getMaterial().getColorName())){
                             leafletJewel = thing;
+                            lastLeafletJewelX = thing.getX1();
+                            lastLeafletJewelY = thing.getY1();
                             break;
                         }
                     }
@@ -220,6 +236,8 @@ public class Environment extends EnvironmentImpl {
                 
                     // Identifica qualquer tipo de comida
                     food = thing;
+                    lastFoodX = thing.getX1();
+                    lastFoodY = thing.getY1();
             }
            
         }
@@ -243,6 +261,8 @@ public class Environment extends EnvironmentImpl {
                 case "gotoFood":
                     if (food != null) 
                         creature.moveto(4.0, food.getX1(), food.getY1());
+                    else if (lastFoodX != null && lastFoodY != null)
+                        creature.moveto(4.0, lastFoodX, lastFoodY);
                     else creature.move(0.0, 0.0, 0.0);
                     break;
                 case "gotoDeliverySpot":
@@ -250,6 +270,8 @@ public class Environment extends EnvironmentImpl {
                     if (deliverySpot != null)
                         // creature.moveto(4.0, 500.0, 500.0);
                         creature.moveto(4.0, deliverySpot.getX1(), deliverySpot.getY1());
+                    else if (lastDeliverySpotX != null && lastDeliverySpotY != null)
+                        creature.moveto(4.0, lastDeliverySpotX, lastDeliverySpotY);
                     else creature.move(0.0, 0.0, 0.0);
                     break;
                 case "deliverLeaflet":
@@ -264,6 +286,8 @@ public class Environment extends EnvironmentImpl {
                 case "gotoJewel":
                     if (leafletJewel != null)
                         creature.moveto(4.0, leafletJewel.getX1(), leafletJewel.getY1());
+                    else if (lastLeafletJewelX != null && lastLeafletJewelY != null)
+                        creature.moveto(4.0, lastLeafletJewelX, lastLeafletJewelY);
                     else creature.move(0.0, 0.0, 0.0);
                     break;                    
                 case "get":

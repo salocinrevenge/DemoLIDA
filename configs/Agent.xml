@@ -21,7 +21,7 @@
     <submodules> 
         <module name="Environment">
             <class>modules.Environment</class>
-            <param name="environment.ticksPerRun" type="int">20</param>
+            <param name="environment.ticksPerRun" type="int">5</param>
             <taskspawner>defaultTS</taskspawner>
         </module>
         <module name="SensoryMemory">
@@ -225,7 +225,7 @@
                     <tasktype>BasicAttentionCodelet</tasktype>
                     <ticksperrun>5</ticksperrun>
                     <param name="nodes" type="string">deliverySpot,completeLeaflet</param>
-                    <param name="refractoryPeriod" type="int">100</param>
+                    <param name="refractoryPeriod" type="int">20</param>
                     <param name="initialActivation" type="double">1.0</param>
                     <param name="learnable.baseLevelActivation" type="double">1.0</param>
                     <param name="learnable.baseLevelRemovalThreshold" type="double">-1.0</param>
@@ -237,7 +237,7 @@
                     <tasktype>BasicAttentionCodelet</tasktype>
                     <ticksperrun>5</ticksperrun>
                     <param name="nodes" type="string">completeLeaflet,nearDeliverySpot</param>
-                    <param name="refractoryPeriod" type="int">100</param>
+                    <param name="refractoryPeriod" type="int">20</param>
                     <param name="initialActivation" type="double">1.0</param>
                     <param name="learnable.baseLevelActivation" type="double">1.0</param>
                     <param name="learnable.baseLevelRemovalThreshold" type="double">-1.0</param>
@@ -261,8 +261,8 @@
             <param name="globalWorkspace.coalitionDecayStrategy">coalitionDecay</param>
             <param name="globalWorkspace.refractoryPeriod" type="int">40</param>
             <!-- Trigger parameters -->
-            <param name="globalWorkspace.delayNoBroadcast" type="int">100</param>
-            <param name="globalWorkspace.delayNoNewCoalition" type="int">50</param>
+            <param name="globalWorkspace.delayNoBroadcast" type="int">20</param>
+            <param name="globalWorkspace.delayNoNewCoalition" type="int">10</param>
             <param name="globalWorkspace.aggregateActivationThreshold" type="double">2.0</param>
             <param name="globalWorkspace.individualActivationThreshold" type="double">0.9</param>
             <taskspawner>defaultTS</taskspawner>
@@ -289,7 +289,7 @@
         <module name="ActionSelection">
             <class>edu.memphis.ccrg.lida.actionselection.BasicActionSelection</class>
             <param name="actionSelection.ticksPerStep" type="int">10 </param>
-            <param name="actionSelection.refractoryPeriodTicks" type="int">80</param>
+            <param name="actionSelection.refractoryPeriodTicks" type="int">20</param>
             <param name="actionSelection.candidateThreshold" type="double">0.8</param> 
             <param name="actionSelection.removalThreshold" type="double">0.1</param>
             <param name="actionSelection.backgroundTaskTicksPerRun" type="int">10</param> 

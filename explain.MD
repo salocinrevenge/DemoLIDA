@@ -180,3 +180,43 @@ Attempting to go to delivery spot...
 ```
 
 If those appear, the detection, attention broadcast, procedural rule, and action path are connected.
+
+## Why Actions Can Arrive Late
+
+The agent does not execute a detector result immediately. A visible object must pass through sensors, PAM detectors, Workspace, attention codelets, Global Workspace, Procedural Memory, Action Selection, Sensory Motor Memory, and finally `Environment.processAction`.
+
+That means the world can change between seeing an object and executing the action. If the creature rotates or moves while the cognitive cycle is still processing, the object may no longer be in `creature.getThingsInVision()` when `performAction` finally runs.
+
+Originally, movement actions depended on the object still being visible:
+
+```java
+if (deliverySpot != null) {
+    creature.moveto(4.0, deliverySpot.getX1(), deliverySpot.getY1());
+} else {
+    creature.move(0.0, 0.0, 0.0);
+}
+```
+
+So a delayed `gotoDeliverySpot` action could arrive after `deliverySpot` had already been cleared by a new environment update.
+
+The fix has two parts:
+
+1. Reduce the most relevant timing delays in `Agent.xml`.
+2. Store last seen target positions in `Environment`, so a selected movement action can still move toward the last known coordinates even if the object is temporarily outside the field of vision.
+
+The changed timing values are:
+
+```xml
+<param name="environment.ticksPerRun" type="int">5</param>
+<param name="globalWorkspace.delayNoBroadcast" type="int">20</param>
+<param name="globalWorkspace.delayNoNewCoalition" type="int">10</param>
+<param name="actionSelection.refractoryPeriodTicks" type="int">20</param>
+```
+
+The delivery attention codelets also use a shorter refractory period:
+
+```xml
+<param name="refractoryPeriod" type="int">20</param>
+```
+
+This keeps the architecture reactive enough for the WS3D environment while still preserving the LIDA processing stages.
