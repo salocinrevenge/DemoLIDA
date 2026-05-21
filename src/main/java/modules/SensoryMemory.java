@@ -16,6 +16,7 @@ public class SensoryMemory extends SensoryMemoryImpl {
     private Thing leafletJewel;
     private Thing deliverySpot;
     private Boolean hasCompleteLeaflet;
+    private Boolean nearDeliverySpot;
 
     public SensoryMemory() {
         this.sensorParam = new HashMap<>();
@@ -25,6 +26,7 @@ public class SensoryMemory extends SensoryMemoryImpl {
         this.leafletJewel = null;
         this.deliverySpot = null;
         this.hasCompleteLeaflet = false;
+        this.nearDeliverySpot = false;
     }
 
     @SuppressWarnings("unchecked")
@@ -48,6 +50,9 @@ public class SensoryMemory extends SensoryMemoryImpl {
         sensorParam.clear();
         sensorParam.put("mode", "hasCompleteLeaflet");
         hasCompleteLeaflet = (Boolean) environment.getState(sensorParam);
+        sensorParam.clear();
+        sensorParam.put("mode", "nearDeliverySpot");
+        nearDeliverySpot = (Boolean) environment.getState(sensorParam);
     }
 
     @Override
@@ -72,6 +77,9 @@ public class SensoryMemory extends SensoryMemoryImpl {
                 break;
             case "hasCompleteLeaflet":
                 requestedObject = hasCompleteLeaflet;
+                break;
+            case "nearDeliverySpot":
+                requestedObject = nearDeliverySpot;
                 break;
             default:
                 break;

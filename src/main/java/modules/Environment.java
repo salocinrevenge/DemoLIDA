@@ -33,6 +33,8 @@ public class Environment extends EnvironmentImpl {
     private String currentAction;   
     private Thing deliverySpot;
     private Boolean hasCompleteLeaflet;
+    private Long completeLeafletId;
+    private Boolean nearDeliverySpot;
     
     public Environment() {
         this.ticksPerRun = DEFAULT_TICKS_PER_RUN;
@@ -45,6 +47,8 @@ public class Environment extends EnvironmentImpl {
         this.currentAction = "rotate";
         this.deliverySpot = null;
         this.hasCompleteLeaflet = false;
+        this.completeLeafletId = null;
+        this.nearDeliverySpot = false;
         this.image = new BufferedImage(ENVIRONMENT_WIDTH, ENVIRONMENT_HEIGHT, BufferedImage.TYPE_INT_RGB);
         clearImage();
     }
@@ -147,6 +151,9 @@ public class Environment extends EnvironmentImpl {
             case "hasCompleteLeaflet":
                 requestedObject = hasCompleteLeaflet;
                 break;
+            case "nearDeliverySpot":
+                requestedObject = nearDeliverySpot;
+                break;
             default:
                 break;
         }
@@ -162,6 +169,8 @@ public class Environment extends EnvironmentImpl {
         thingAhead.clear();
         deliverySpot = null;
         hasCompleteLeaflet = false;
+        completeLeafletId = null;
+        nearDeliverySpot = false;
 
         // Check if there is any complete leaflet
         for (Leaflet leaflet : creature.getLeaflets()) {
@@ -174,6 +183,7 @@ public class Environment extends EnvironmentImpl {
             }
             if (complete) {
                 hasCompleteLeaflet = true;
+                completeLeafletId = leaflet.getID();
                 break;
             }
         }
@@ -181,6 +191,10 @@ public class Environment extends EnvironmentImpl {
         for (Thing thing : creature.getThingsInVision()) {
             if (thing.getCategory() == Constants.categoryDeliverySPOT) {
                 deliverySpot = thing;
+                System.out.println("Delivery Spot detected at (" + thing.getX1() + ", " + thing.getY1() + ")");
+                if (creature.calculateDistanceTo(thing) <= Constants.OFFSET) {
+                    nearDeliverySpot = true;
+                }
             } else if (creature.calculateDistanceTo(thing) <= Constants.OFFSET) {
                 // Identifica o objeto proximo
                 thingAhead.add(thing);
@@ -232,9 +246,20 @@ public class Environment extends EnvironmentImpl {
                     else creature.move(0.0, 0.0, 0.0);
                     break;
                 case "gotoDeliverySpot":
+                    System.out.println("Attempting to go to delivery spot...");
                     if (deliverySpot != null)
-                        creature.moveto(4.0, 500.0, 500.0);
+                        // creature.moveto(4.0, 500.0, 500.0);
+                        creature.moveto(4.0, deliverySpot.getX1(), deliverySpot.getY1());
                     else creature.move(0.0, 0.0, 0.0);
+                    break;
+                case "deliverLeaflet":
+                    if (completeLeafletId != null) {
+                        try {
+                            creature.deliverLeaflet(String.valueOf(completeLeafletId));
+                            System.out.println("Leaflet delivered: " + completeLeafletId);
+                        } catch (Exception e) {}
+                    }
+                    this.resetState();
                     break;
                 case "gotoJewel":
                     if (leafletJewel != null)

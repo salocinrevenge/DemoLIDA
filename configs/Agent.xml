@@ -45,7 +45,7 @@
             <param name="pam.propagationTicksPerRun" type="int">1</param>
             <param name="pam.propagateActivationThreshold" type="double">0.05</param>
             <param name="nodes">
-                food,nearObject,leafletJewel,jewel,deliverySpot,completeLeaflet
+                food,nearObject,leafletJewel,jewel,deliverySpot,completeLeaflet,nearDeliverySpot
             </param>
             <taskspawner>defaultTS</taskspawner>
             <initialTasks>
@@ -103,6 +103,16 @@
                     <tasktype>CompleteLeafletDetector</tasktype>
                     <ticksperrun>3</ticksperrun>
                     <param name="node" type="string">completeLeaflet</param>
+                    <param name="learnable.baseLevelActivation" type="double">0.0</param>
+                    <param name="learnable.baseLevelRemovalThreshold" type="double">-1.0</param>
+                    <param name="learnable.baseLevelDecayStrategy" type="string">defaultDecay</param>
+                    <param name="learnable.baseLevelExciteStrategy" type="string">defaultExcite</param>
+                    <param name="learnable.totalActivationStrategy" type="string">DefaultTotalActivationStrategy</param>
+                </task>
+                <task name="NearDeliverySpotDetector">
+                    <tasktype>NearDeliverySpotDetector</tasktype>
+                    <ticksperrun>3</ticksperrun>
+                    <param name="node" type="string">nearDeliverySpot</param>
                     <param name="learnable.baseLevelActivation" type="double">0.0</param>
                     <param name="learnable.baseLevelRemovalThreshold" type="double">-1.0</param>
                     <param name="learnable.baseLevelDecayStrategy" type="string">defaultDecay</param>
@@ -214,7 +224,7 @@
                 <task name="DeliverySpotAttentionCodelet">
                     <tasktype>BasicAttentionCodelet</tasktype>
                     <ticksperrun>5</ticksperrun>
-                    <param name="nodes" type="string">deliverySpot,completeLeaflet</param>
+                    <param name="nodes" type="string">deliverySpot,completeLeaflet,nearDeliverySpot</param>
                     <param name="refractoryPeriod" type="int">100</param>
                     <param name="initialActivation" type="double">1.0</param>
                     <param name="learnable.baseLevelActivation" type="double">1.0</param>
@@ -259,7 +269,8 @@
             <param name="scheme.2">if leaflet jewel, goto jewel|(leafletJewel)()|action.gotoJewel|()()|0.3</param>
             <param name="scheme.3">if food, goto food|(food)()|action.gotoFood|()()|0.3</param>
             <param name="scheme.4">if nearObject, get object|(nearObject)()|action.get|()()|0.01</param>
-            <param name="scheme.5">if completeLeaflet and see delivery spot, goto deliveryspot|(deliverySpot,completeLeaflet)()|action.gotoDeliverySpot|()()|0.4</param>
+            <param name="scheme.5">if complete and see delivery spot, goto deliveryspot|(deliverySpot,completeLeaflet)()|action.gotoDeliverySpot|()()|0.4</param>
+            <param name="scheme.6">if complete and near delivery spot, deliver leaflet|(nearDeliverySpot,completeLeaflet)()|action.deliverLeaflet|()()|0.5</param>
             <taskspawner>defaultTS</taskspawner>                      
             <initializerclass>edu.memphis.ccrg.lida.proceduralmemory.BasicProceduralMemoryInitializer</initializerclass>
         </module>
@@ -283,6 +294,7 @@
             <param name="smm.mapping.3">action.gotoJewel,algorithm.gotoJewel</param>
             <param name="smm.mapping.4">action.get,algorithm.get</param>
             <param name="smm.mapping.5">action.gotoDeliverySpot,algorithm.gotoDeliverySpot</param>
+            <param name="smm.mapping.6">action.deliverLeaflet,algorithm.deliverLeaflet</param>
             <taskspawner>defaultTS</taskspawner>
             <initializerclass>edu.memphis.ccrg.lida.sensorymotormemory.BasicSensoryMotorMemoryInitializer</initializerclass>
         </module>
